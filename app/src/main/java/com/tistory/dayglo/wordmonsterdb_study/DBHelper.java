@@ -13,7 +13,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(DBContract.SQL_CREATE_TABLE);
+        String[] createQuery = DBContract.getCreateQuery(); // 테이블 생성 쿼리
+
+        for(int i = 0; i < createQuery.length; i++) {
+            db.execSQL(createQuery[i]); // 테이블 생성
+        }
     }
 
     @Override
@@ -31,7 +35,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public String getAllData() {
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DBContract.WORD_TABLE_1, null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DBContract.WORD_TABLE[0], null);
 
         String resultData = "";
         while(cursor.moveToNext()) {
