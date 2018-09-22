@@ -21,7 +21,8 @@ public class MainActivity extends AppCompatActivity {
         insertBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbHelper.insertRow();
+//                dbHelper.insertRow();
+                dbHelper.getAllData();
                 Log.d("ZZANZU", "insert data to DB : " + dbHelper.getAllData());
             }
         });

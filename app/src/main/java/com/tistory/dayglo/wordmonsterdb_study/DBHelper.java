@@ -18,6 +18,12 @@ public class DBHelper extends SQLiteOpenHelper {
         for(int i = 0; i < createQuery.length; i++) {
             db.execSQL(createQuery[i]); // 테이블 생성
         }
+
+        String[] insertTestWordQuery = DBContract.insertSampleData();
+
+        for(int i = 0; i < insertTestWordQuery.length; i++) {
+            db.execSQL(insertTestWordQuery[i]);
+        }
     }
 
     @Override
