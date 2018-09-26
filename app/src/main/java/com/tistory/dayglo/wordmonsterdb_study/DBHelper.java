@@ -5,6 +5,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import static com.tistory.dayglo.wordmonsterdb_study.DBContract.COL_DIFF_SCALE;
+import static com.tistory.dayglo.wordmonsterdb_study.DBContract.COL_TIME;
+import static com.tistory.dayglo.wordmonsterdb_study.DBContract.COL_WORD_EN;
+import static com.tistory.dayglo.wordmonsterdb_study.DBContract.COL_WORD_KR;
+import static com.tistory.dayglo.wordmonsterdb_study.DBContract.WORD_TABLE;
+
 public class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -13,12 +19,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String[] createQuery = DBContract.getCreateQuery(); // 테이블 생성 쿼리
+        String[] createQuery = getCreateQuery(); // 테이블 생성 쿼리
         for(int i = 0; i < createQuery.length; i++) {
             db.execSQL(createQuery[i]); // 테이블 생성
         }
 
-        String[] insertTestWordQuery = DBContract.insertSampleDataQuery();
+        String[] insertTestWordQuery = insertSampleDataQuery();
         for(int i = 0; i < insertTestWordQuery.length; i++) {
             db.execSQL(insertTestWordQuery[i]);
         }
@@ -29,10 +35,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    // i번째 테이블 데이터 조회
     public String getAllData(int i) {
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DBContract.WORD_TABLE[i], null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + WORD_TABLE[i], null);
 
         String resultData = "";
         while(cursor.moveToNext()) {
@@ -45,5 +52,138 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         return resultData;
+    }
+
+    // 데이터 테이블 생성 쿼리 배열(WORD_TABLE_1 ~ WORD_TABLE_6)
+    public static String[] getCreateQuery() {
+        String[] createQuery = new String[6];
+
+        for(int i = 0; i < 6; i++) {
+            createQuery[i] = "CREATE TABLE IF NOT EXISTS " + WORD_TABLE[i] + " " +
+                    "(" +
+                    "_id INTEGER PRIMARY KEY AUTOINCREMENT" + ", " +
+                    COL_WORD_EN     +   " TEXT"     +   ", " +
+                    COL_WORD_KR     +   " TEXT"     +   ", " +
+                    COL_DIFF_SCALE  +   " INTEGER"  +   ", " +
+                    COL_TIME        +   " INTEGER"  +
+                    ")";
+        }
+
+        return createQuery;
+    }
+
+    // 샘플 데이터 추가, 하드코딩 ㅎㄷㄷ
+    public static String[] insertSampleDataQuery() {
+        String[] insertTestWordQuery = new String[60];
+
+        // 1번 테이블 데이터 입력
+        for(int i = 0; i < 12; i++) {
+            insertTestWordQuery[i] = "INSERT INTO " + WORD_TABLE[0] + " " +
+                    "(" +
+                    COL_WORD_EN + "," +
+                    COL_WORD_KR + "," +
+                    COL_DIFF_SCALE + "," +
+                    COL_TIME +
+                    ")" +
+                    "VALUES " +
+                    "("  +
+                    "'word_example_1'" + ", " +
+                    "'1table_ex_word'" + ", " +
+                    "1" + ", " +
+                    "20180921" +
+                    ")";
+        }
+
+        // 2번 테이블 데이터 입력
+        for(int i = 12; i < 25; i++) {
+            insertTestWordQuery[i] = "INSERT INTO " + WORD_TABLE[1] + " " +
+                    "(" +
+                    COL_WORD_EN + "," +
+                    COL_WORD_KR + "," +
+                    COL_DIFF_SCALE + "," +
+                    COL_TIME +
+                    ")" +
+                    "VALUES " +
+                    "("  +
+                    "'word_example_2'" + ", " +
+                    "'2table_ex_word'" + ", " +
+                    "2" + ", " +
+                    "20180921" +
+                    ")";
+        }
+
+        // 3번 테이블 데이터 입력
+        for(int i = 25; i < 35; i++) {
+            insertTestWordQuery[i] = "INSERT INTO " + WORD_TABLE[2] + " " +
+                    "(" +
+                    COL_WORD_EN + "," +
+                    COL_WORD_KR + "," +
+                    COL_DIFF_SCALE + "," +
+                    COL_TIME +
+                    ")" +
+                    "VALUES " +
+                    "("  +
+                    "'word_example_3'" + ", " +
+                    "'table_ex_word'" + ", " +
+                    "3" + ", " +
+                    "20180921" +
+                    ")";
+        }
+
+        // 4번 테이블 데이터 입력
+        for(int i = 35; i < 45; i++) {
+            insertTestWordQuery[i] = "INSERT INTO " + WORD_TABLE[3] + " " +
+                    "(" +
+                    COL_WORD_EN + "," +
+                    COL_WORD_KR + "," +
+                    COL_DIFF_SCALE + "," +
+                    COL_TIME +
+                    ")" +
+                    "VALUES " +
+                    "("  +
+                    "'word_example_4'" + ", " +
+                    "'4table_ex_word'" + ", " +
+                    "4" + ", " +
+                    "20180921" +
+                    ")";
+        }
+
+        // 5번 테이블 데이터 입력
+        for(int i = 45; i < 55; i++) {
+            insertTestWordQuery[i] = "INSERT INTO " + WORD_TABLE[4] + " " +
+                    "(" +
+                    COL_WORD_EN + "," +
+                    COL_WORD_KR + "," +
+                    COL_DIFF_SCALE + "," +
+                    COL_TIME +
+                    ")" +
+                    "VALUES " +
+                    "("  +
+                    "'word_example_5'" + ", " +
+                    "'5table_ex_word'" + ", " +
+                    "5" + ", " +
+                    "20180921" +
+                    ")";
+        }
+
+        // 6번 테이블 데이터 입력
+        for(int i = 55; i < 60; i++) {
+            insertTestWordQuery[i] = "INSERT INTO " + WORD_TABLE[5] + " " +
+                    "(" +
+                    COL_WORD_EN + "," +
+                    COL_WORD_KR + "," +
+                    COL_DIFF_SCALE + "," +
+                    COL_TIME +
+                    ")" +
+                    "VALUES " +
+                    "("  +
+                    "'word_example_6'" + ", " +
+                    "'6table_ex_word'" + ", " +
+                    "6" + ", " +
+                    "20180921" +
+                    ")";
+        }
+
+        return insertTestWordQuery;
     }
 }
