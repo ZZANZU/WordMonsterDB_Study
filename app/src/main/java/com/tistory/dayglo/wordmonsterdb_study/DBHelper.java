@@ -14,13 +14,11 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String[] createQuery = DBContract.getCreateQuery(); // 테이블 생성 쿼리
-
         for(int i = 0; i < createQuery.length; i++) {
             db.execSQL(createQuery[i]); // 테이블 생성
         }
 
-        String[] insertTestWordQuery = DBContract.insertSampleData();
-
+        String[] insertTestWordQuery = DBContract.insertSampleDataQuery();
         for(int i = 0; i < insertTestWordQuery.length; i++) {
             db.execSQL(insertTestWordQuery[i]);
         }
@@ -31,24 +29,18 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public void insertRow() {
-        SQLiteDatabase db = getWritableDatabase();
-
-        db.execSQL(DBContract.SQL_INSERT + "('hi', '안녕', 1, 20180917)");
-        db.close();
-    }
-
-    public String getAllData() {
+    public String getAllData(int i) {
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DBContract.WORD_TABLE[0], null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DBContract.WORD_TABLE[i], null);
 
         String resultData = "";
         while(cursor.moveToNext()) {
             resultData += cursor.getString(0) + " : "
-                    + cursor.getString(1)
-                    + cursor.getString(2)
-                    + cursor.getString(3)
+                    + cursor.getString(1) + " "
+                    + cursor.getString(2) + " "
+                    + cursor.getString(3) + " "
+                    + cursor.getString(4)
                     + "\n";
         }
 

@@ -1,9 +1,5 @@
 package com.tistory.dayglo.wordmonsterdb_study;
 
-import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
-
 public class DBContract {
     private DBContract() {};
 
@@ -32,6 +28,7 @@ public class DBContract {
         for(int i = 0; i < 6; i++) {
             createQuery[i] = "CREATE TABLE IF NOT EXISTS " + WORD_TABLE[i] + " " +
                     "(" +
+                    "_id INTEGER PRIMARY KEY AUTOINCREMENT" + ", " +
                     COL_WORD_EN     +   " TEXT"     +   ", " +
                     COL_WORD_KR     +   " TEXT"     +   ", " +
                     COL_DIFF_SCALE  +   " INTEGER"  +   ", " +
@@ -43,7 +40,7 @@ public class DBContract {
     }
 
     // 샘플 데이터 추가, 하드코딩 ㅎㄷㄷ
-    public static String[] insertSampleData() {
+    public static String[] insertSampleDataQuery() {
         String[] insertTestWordQuery = new String[60];
 
         // 1번 테이블 데이터 입력
