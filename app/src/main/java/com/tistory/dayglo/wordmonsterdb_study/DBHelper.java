@@ -35,7 +35,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    // i번째 테이블 데이터 조회
+    // i번째 테이블 데이터 조회.
     public String getAllData(int i) {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -55,10 +55,10 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     // 데이터 테이블 생성 쿼리 배열(WORD_TABLE_1 ~ WORD_TABLE_6)
-    public static String[] getCreateQuery() {
-        String[] createQuery = new String[6];
+    public String[] getCreateQuery() {
+        String[] createQuery = new String[WORD_TABLE.length];
 
-        for(int i = 0; i < 6; i++) {
+        for(int i = 0; i < WORD_TABLE.length; i++) {
             createQuery[i] = "CREATE TABLE IF NOT EXISTS " + WORD_TABLE[i] + " " +
                     "(" +
                     "_id INTEGER PRIMARY KEY AUTOINCREMENT" + ", " +
@@ -73,7 +73,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     // 샘플 데이터 추가, 하드코딩 ㅎㄷㄷ
-    public static String[] insertSampleDataQuery() {
+    public String[] insertSampleDataQuery() {
         String[] insertTestWordQuery = new String[60];
 
         // 1번 테이블 데이터 입력
@@ -185,5 +185,55 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         return insertTestWordQuery;
+    }
+
+    // num개의 word window 생성(7번 테이블에 저장됨)
+    public void makeWordWindow(int num) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        for(int i = 0; i < 5; i++) {
+            Cursor cursor = db.rawQuery("SELECT * FROM " + WORD_TABLE[i] + " ORDER BY RANDOM() LIMIT 1", null);
+
+            if(cursor != null) {
+                cursor.moveToFirst();
+
+                moveRowToTable(cursor, 6);
+
+                cursor.close();
+            }
+        }
+
+        db.close();
+    }
+
+    // 단어 테이블의 특정 row를 cursor에 담아서 다른 테이블에 insert.
+    public void moveRowToTable(Cursor cursor, int destTableNum) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        if(cursor != null) {
+            String WORD_EN = cursor.getString(1);
+            String WORD_KR = cursor.getString(2);
+            String DIFF_SCALE = cursor.getString(3);
+            String TIME = cursor.getString(4);
+
+            String INSERT_QUERY = "INSERT INTO " + WORD_TABLE[destTableNum] + " " +
+                    "(" +
+                    COL_WORD_EN + ", " +
+                    COL_WORD_KR + ", " +
+                    COL_DIFF_SCALE + ", " +
+                    COL_TIME +
+                    ")" +
+                    " VALUES " +
+                    "("  +
+                    "'" + WORD_EN + "'" + ", " +
+                    "'" + WORD_KR + "'" + ", " +
+                    "'" + DIFF_SCALE + "'" + ", " +
+                    "'" + TIME + "'" +
+                    ")";
+
+            db.execSQL(INSERT_QUERY);
+
+            // TODO: 9/27/18 이동시킨 row를 기존 테이블에서 삭제하는 기능 추가
+        }
     }
 }

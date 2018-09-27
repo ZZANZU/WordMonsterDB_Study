@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         getWordWindowBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                dbHelper.makeWordWindow(6);
             }
         });
     }
