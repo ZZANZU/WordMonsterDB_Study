@@ -4,8 +4,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import static com.tistory.dayglo.wordmonsterdb_study.DBContract.COL_DIFF_SCALE;
+import static com.tistory.dayglo.wordmonsterdb_study.DBContract.COL_ID;
 import static com.tistory.dayglo.wordmonsterdb_study.DBContract.COL_TIME;
 import static com.tistory.dayglo.wordmonsterdb_study.DBContract.COL_WORD_EN;
 import static com.tistory.dayglo.wordmonsterdb_study.DBContract.COL_WORD_KR;
@@ -61,7 +63,7 @@ public class DBHelper extends SQLiteOpenHelper {
         for(int i = 0; i < WORD_TABLE.length; i++) {
             createQuery[i] = "CREATE TABLE IF NOT EXISTS " + WORD_TABLE[i] + " " +
                     "(" +
-                    "_id INTEGER PRIMARY KEY AUTOINCREMENT" + ", " +
+                    COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + ", " +
                     COL_WORD_EN     +   " TEXT"     +   ", " +
                     COL_WORD_KR     +   " TEXT"     +   ", " +
                     COL_DIFF_SCALE  +   " INTEGER"  +   ", " +
@@ -197,7 +199,7 @@ public class DBHelper extends SQLiteOpenHelper {
             if(cursor != null) {
                 cursor.moveToFirst();
 
-                moveRowToTable(cursor, 6);
+                moveRowToTable(cursor, i,6);
 
                 cursor.close();
             }
@@ -206,11 +208,12 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    // 단어 테이블의 특정 row를 cursor에 담아서 다른 테이블에 insert.
-    public void moveRowToTable(Cursor cursor, int destTableNum) {
+    // 단어 테이블의 특정 row를 cursor에 담아서 다른 테이블에 insert & 기존 테이블에서는 delete.
+    public void moveRowToTable(Cursor cursor, int originTableNum, int destTableNum) {
         SQLiteDatabase db = getWritableDatabase();
 
         if(cursor != null) {
+            String ID = cursor.getString(0);
             String WORD_EN = cursor.getString(1);
             String WORD_KR = cursor.getString(2);
             String DIFF_SCALE = cursor.getString(3);
@@ -231,9 +234,13 @@ public class DBHelper extends SQLiteOpenHelper {
                     "'" + TIME + "'" +
                     ")";
 
-            db.execSQL(INSERT_QUERY);
+            // TODO: 9/28/18 COL_ID가 아닌 COL_WORD_EN을 보고 삭제하도록 구현
+            String DELETE_ROW_QUERY = "DELETE FROM " + WORD_TABLE[originTableNum] + " WHERE " +
+                    COL_ID + "='" +
+                    ID + "'";
 
-            // TODO: 9/27/18 이동시킨 row를 기존 테이블에서 삭제하는 기능 추가
+            db.execSQL(INSERT_QUERY);
+            db.execSQL(DELETE_ROW_QUERY);
         }
     }
 }

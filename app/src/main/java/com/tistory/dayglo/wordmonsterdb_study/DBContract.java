@@ -8,6 +8,7 @@ public class DBContract {
                                                 "WORD_DB_5", "WORD_DB_6", "WORD_DB_7"};
 
     // 컬럼값들 선언
+    public static final String COL_ID = "_id";
     public static final String COL_WORD_EN = "WORD_EN";
     public static final String COL_WORD_KR = "WORD_KR";
     public static final String COL_DIFF_SCALE = "DIFF_SCALE";
