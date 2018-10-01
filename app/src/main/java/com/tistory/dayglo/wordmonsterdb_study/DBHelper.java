@@ -37,7 +37,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    // i번째 테이블 데이터 조회.
     public String getAllData(int i) {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -51,6 +50,24 @@ public class DBHelper extends SQLiteOpenHelper {
                     + cursor.getString(3) + " "
                     + cursor.getString(4)
                     + "\n";
+        }
+
+        return resultData;
+    }
+
+    // i번째 테이블 데이터 조회.
+    public String[][] getDataFromTable(int tableNum) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + WORD_TABLE[tableNum], null);
+        cursor.moveToFirst();
+
+        String[][] resultData = new String[cursor.getCount()][cursor.getColumnCount()];
+        for(int i = 0; i < cursor.getCount(); i++) {
+            for(int j = 0; j < cursor.getColumnCount(); j++) {
+                resultData[i][j] = cursor.getString(j);
+            }
+            cursor.moveToNext();
         }
 
         return resultData;
